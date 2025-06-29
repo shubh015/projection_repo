@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Background Colors */
+    --bg-primary: #000000;
+    --bg-success: #00ad56;
+    --bg-blue: #0e2ca8;
+    --bg-danger: #fb0a0a;
+    --bg-warning: #fcaa01;
+    --bg-white: #ffffff;
+    --bg-overlay: #ffffff19;
+
+    /* Text Colors */
+    --text-success: #048b43;
+    --text-blue: #3849be;
+    --text-dark: #3b3b3b;
+    --text-danger: #de0026;
+    --text-warning: #de9000;
+    --text-white: #ffffff;
+  }
+}
+
+@layer utilities {
+  /* Background Colors */
+  .bg-primary {
+    background-color: var(--bg-primary);
+  }
+  .bg-success {
+    background-color: var(--bg-success);
+  }
+  .bg-blue {
+    background-color: var(--bg-blue);
+  }
+  .bg-danger {
+    background-color: var(--bg-danger);
+  }
+  .bg-warning {
+    background-color: var(--bg-warning);
+  }
+  .bg-white {
+    background-color: var(--bg-white);
+  }
+  .bg-overlay {
+    background-color: var(--bg-overlay);
+  }
+
+  /* Text Colors */
+  .text-success {
+    color: var(--text-success);
+  }
+  .text-blue {
+    color: var(--text-blue);
+  }
+  .text-dark {
+    color: var(--text-dark);
+  }
+  .text-danger {
+    color: var(--text-danger);
+  }
+  .text-warning {
+    color: var(--text-warning);
+  }
+  .text-white {
+    color: var(--text-white);
+  }
+}
