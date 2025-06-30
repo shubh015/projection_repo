@@ -17,7 +17,7 @@ const AppBackground = ({ children, className = "" }) => {
           alt="Gradient decoration"
           className="absolute top-0 right-[-20vw] w-[50vw] min-w-[575px] max-w-[1012px] h-auto object-cover opacity-80
                      xl:right-[-15vw] xl:w-[45vw]
-                     2xl:right-[23vw] 2xl:w-[40vw]
+                     2xl:right-[10vw] 2xl:w-[40vw]
                      lg:right-[-25vw] lg:w-[55vw]
                      md:right-[-30vw] md:w-[60vw]"
         />
@@ -30,7 +30,7 @@ const AppBackground = ({ children, className = "" }) => {
           alt="Gradient decoration"
           className="absolute bottom-0 left-[-20vw] w-[50vw] min-w-[575px] max-w-[1012px] h-auto object-contain opacity-80
                      xl:left-[-15vw] xl:w-[45vw]
-                     2xl:left-[23vw] 2xl:w-[40vw]
+                     2xl:left-[10vw] 2xl:w-[40vw]
                      lg:left-[-25vw] lg:w-[55vw]
                      md:left-[-30vw] md:w-[60vw]"
         />

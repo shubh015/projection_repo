@@ -20,3 +20,22 @@ body {
   box-sizing: inherit;
 }
 
+@keyframes rotateGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 400% 50%;
+  }
+}
+
+.animate-gradient-rotate {
+  animation: rotateGradient 4s linear infinite;
+  background-size: 400% 400%;
+  border-radius: 26px;
+}
+
+.animate-gradient-rotate-wrapper {
+  position: relative;
+  display: inline-block;
+}
