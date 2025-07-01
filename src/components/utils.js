@@ -76,4 +76,5 @@ export const emotionData = [
     yarnImage: '/images/blue_knot.png',
     sliderColor: '#0e2ca8',
   },
+  
 ];
