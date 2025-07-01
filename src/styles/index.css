@@ -39,3 +39,62 @@ body {
   position: relative;
   display: inline-block;
 }
+
+/* Touch optimization for the entire app */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Specific touch optimizations for inputs */
+input[type="text"], 
+input[type="email"], 
+input[type="tel"], 
+textarea {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+  touch-action: manipulation;
+}
+
+/* Smooth transitions for touch interactions */
+.touch-smooth {
+  transition: transform 0.15s ease-in-out;
+}
+
+.touch-smooth:active {
+  transform: scale(0.98);
+}
+
+/* Ensure virtual keyboard doesn't break layout */
+.keyboard-safe {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Fix for iOS Safari virtual keyboard issues */
+@supports (-webkit-touch-callout: none) {
+  input[type="text"] {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    transform: scale(4.375); /* Scale back up for your 7xl equivalent */
+    transform-origin: center;
+  }
+}
+
+/* Large touch target optimization */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  position: relative;
+}
+
+.touch-target::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  z-index: -1;
+}

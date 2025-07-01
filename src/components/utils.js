@@ -1,75 +1,79 @@
- // Function to get hex color based on intensity
- export const getHexColorByIntensity = (baseColor, intensity) => {
-    if (intensity === 0) return '#808080'; // Neutral gray
+// Function to get hex color based on intensity
+export const getHexColorByIntensity = (baseColor, intensity) => {
+  if (intensity === 0) return '#808080'; // Neutral gray
 
-    const colors = {
-      anger: {
-        light: '#ffb3b3', // 1-25%
-        medium: '#ff6666', // 26-50%
-        dark: '#de0026', // 51-75%
-        intense: '#b30020', // 76-100%
-      },
-      greed: {
-        light: '#f5d982', // 1-25%
-        medium: '#f0c649', // 26-50%
-        dark: '#de9000', // 51-75%
-        intense: '#b87600', // 76-100%
-      },
-      maya: {
-        light: '#a8e6c1', // 1-25%
-        medium: '#6dd894', // 26-50%
-        dark: '#048b43', // 51-75%
-        intense: '#036635', // 76-100%
-      },
-      maan: {
-        light: '#a8b3e6', // 1-25%
-        medium: '#6d7ddd', // 26-50%
-        dark: '#3849be', // 51-75%
-        intense: '#2d3a9a', // 76-100%
-      },
-    };
-
-    if (intensity <= 25) return colors[baseColor].light;
-    if (intensity <= 50) return colors[baseColor].medium;
-    if (intensity <= 75) return colors[baseColor].dark;
-    return colors[baseColor].intense;
+  const colors = {
+    red: {
+      light: '#ffb3b3', // 1-25%
+      medium: '#ff6666', // 26-50%
+      dark: '#de0026', // 51-75%
+      intense: '#b30020', // 76-100%
+    },
+    yellow: {
+      light: '#f5d982', // 1-25%
+      medium: '#f0c649', // 26-50%
+      dark: '#de9000', // 51-75%
+      intense: '#b87600', // 76-100%
+    },
+    green: {
+      light: '#a8e6c1', // 1-25%
+      medium: '#6dd894', // 26-50%
+      dark: '#048b43', // 51-75%
+      intense: '#036635', // 76-100%
+    },
+    blue: {
+      light: '#a8b3e6', // 1-25%
+      medium: '#6d7ddd', // 26-50%
+      dark: '#3849be', // 51-75%
+      intense: '#2d3a9a', // 76-100%
+    },
   };
 
-   export const emotionData = [
-    {
-      key: 'anger',
-      label: 'Anger',
-      color: '#de0026',
-      gradientFrom: '#d69191fc',
-      gradientTo: '#ff0000',
-      progressImage: '/images/img_test_1.png',
-      sliderColor: '#fb0a0a',
-    },
-    {
-      key: 'greed',
-      label: 'Greed',
-      color: '#de9000',
-      gradientFrom: '#de9000',
-      gradientTo: '#de9000',
-      progressImage: '/images/img_yelloe_progress_bar_1.png',
-      sliderColor: '#fcaa01',
-    },
-    {
-      key: 'maya',
-      label: 'Maya',
-      color: '#048b43',
-      gradientFrom: '#8ed5af',
-      gradientTo: '#048b43',
-      progressImage: '/images/img_green_progress_bar_1.png',
-      sliderColor: '#00ad56',
-    },
-    {
-      key: 'maan',
-      label: 'Maan',
-      color: '#3849be',
-      gradientFrom: '#8f99df',
-      gradientTo: '#3849be',
-      progressImage: '/images/img_blue_progress_bar_1.png',
-      sliderColor: '#0e2ca8',
-    },
-  ];
+  if (intensity <= 25) return colors[baseColor].light;
+  if (intensity <= 50) return colors[baseColor].medium;
+  if (intensity <= 75) return colors[baseColor].dark;
+  return colors[baseColor].intense;
+};
+
+export const emotionData = [
+  {
+    key: 'red',
+    label: 'Anger',
+    color: '#de0026',
+    gradientFrom: '#d69191fc',
+    gradientTo: '#ff0000',
+    threadImage: '/images/red_thread.png',
+    yarnImage: '/images/red_knot.png',
+    sliderColor: '#fb0a0a',
+  },
+  {
+    key: 'yellow',
+    label: 'Greed',
+    color: '#de9000',
+    gradientFrom: '#de9000',
+    gradientTo: '#de9000',
+    threadImage: '/images/yellow_thread.png',
+    yarnImage: '/images/yellow_knot.png',
+    sliderColor: '#fcaa01',
+  },
+  {
+    key: 'green',
+    label: 'Maya',
+    color: '#048b43',
+    gradientFrom: '#8ed5af',
+    gradientTo: '#048b43',
+    threadImage: '/images/green_thread.png',
+    yarnImage: '/images/green_knot.png',
+    sliderColor: '#00ad56',
+  },
+  {
+    key: 'blue',
+    label: 'Maan',
+    color: '#3849be',
+    gradientFrom: '#8f99df',
+    gradientTo: '#3849be',
+    threadImage: '/images/blue_thread.png',
+    yarnImage: '/images/blue_knot.png',
+    sliderColor: '#0e2ca8',
+  },
+];

@@ -1,17 +1,17 @@
 import AppBackground from '@/components/common/AppBackground';
 import CrawlingGradientButton from '@/components/ui/CrawlingGradientButton';
+import EmotionSlider from '@/components/ui/EmotionSlider';
 import { emotionData, getHexColorByIntensity } from '@/components/utils';
-import { Thread } from '@/icons/thread';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const EmotionSelection = () => {
   const navigate = useNavigate();
   const [emotions, setEmotions] = useState({
-    anger: 0,
-    greed: 0,
-    maya: 0,
-    maan: 0,
+    red: 0,
+    yellow: 0,
+    green: 0,
+    blue: 0,
   });
 
   const handleSliderChange = (emotion, value) => {
@@ -21,7 +21,7 @@ const EmotionSelection = () => {
     }));
   };
 
-  const handleWeaveClick = async() => {
+  const handleWeaveClick = async () => {
     const payload = {};
     emotionData.forEach((emotion) => {
       const intensity = emotions[emotion.key];
@@ -31,7 +31,8 @@ const EmotionSelection = () => {
       };
     });
 
-    console.log('Generated Payload:', payload);
+    // console.log('Generated Payload:', payload);
+       navigate('/exit-page');
     try {
       const response = await fetch('http://localhost:3000', {
         method: 'POST',
@@ -40,21 +41,20 @@ const EmotionSelection = () => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to submit data');
       }
-  
+
       const data = await response.json();
       console.log('Server Response:', data);
-  
+
       navigate('/exit-page');
     } catch (error) {
       console.error('Error sending data:', error.message);
       alert('Failed to weave emotions. Please try again.');
     }
   };
-
 
   return (
     <AppBackground>
@@ -141,142 +141,21 @@ const EmotionSelection = () => {
         </div>
 
         <div className="w-full px-14 space-y-[38px] mb-[56px]">
-          {emotionData.map((emotion) => {
-            const percentage = emotions[emotion.key];
-            let leftOffset;
-            if (percentage === 0) {
-              leftOffset = '0px';
-            } else if (percentage === 100) {
-              leftOffset = 'calc(100% - 32px)';
-            } else {
-              leftOffset = `calc(${percentage}% - 16px)`;
-            }
-
-            return (
-              <div
-                key={emotion.key}
-                className="relative bg-overlay rounded-[26px] p-[15px]"
-                style={{
-                  border: '1px solid rgba(255,255,255,0.1)',
-                }}
-              >
-                <div
-                  className="rounded-[15px] p-[3px]"
-                  style={{
-                    background: `linear-gradient(45deg, ${emotion.gradientFrom} 0%, ${emotion.gradientTo} 100%)`,
-                  }}
-                >
-                  <div
-                    className="rounded-[12px] p-12 flex items-center justify-between"
-                    style={{ backgroundColor: '#191919' }}
-                  >
-                    <span
-                      className="text-[80px] font-bold font-['Poppins'] leading-[45px] ml-[45px]"
-                      style={{ color: emotion.color }}
-                    >
-                      {emotion.label}
-                    </span>
-
-                    <div
-                      className="relative flex-1 mx-[65px] p-12 cursor-pointer touch-slider"
-                      onTouchStart={(e) => {
-                        e.preventDefault();
-                        const handleTouchMove = (moveEvent) => {
-                          const touch = moveEvent.touches[0];
-                          const rect = e.currentTarget.getBoundingClientRect();
-                          const percentage = Math.min(
-                            100,
-                            Math.max(0, ((touch.clientX - rect.left) / rect.width) * 100)
-                          );
-                          handleSliderChange(emotion.key, percentage);
-                        };
-
-                        const handleTouchEnd = () => {
-                          document.removeEventListener('touchmove', handleTouchMove);
-                          document.removeEventListener('touchend', handleTouchEnd);
-                        };
-
-                        document.addEventListener('touchmove', handleTouchMove, { passive: false });
-                        document.addEventListener('touchend', handleTouchEnd);
-                      }}
-                      onClick={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const clickX = e.clientX - rect.left;
-                        const percentage = (clickX / rect.width) * 100;
-                        handleSliderChange(emotion.key, Math.min(100, Math.max(0, percentage)));
-                      }}
-                    >
-                      {/* Base full bar */}
-                      <div
-                        className="absolute top-1/2 transform -translate-y-1/2 h-[20px] w-full rounded-full"
-                        style={{
-                          backgroundColor: emotion.color,
-                          opacity: 0.3,
-                        }}
-                      />
-
-                      {/* Progress thread image - Perfectly aligned */}
-                      <div
-                        className="absolute top-1/2 transform -translate-y-1/2 h-[20px] overflow-hidden rounded-full transition-all duration-150 ease-out"
-                        style={{
-                          width: `${percentage}%`,
-                          left: '0%',
-                        }}
-                      >
-                        <div
-                          className="h-full bg-cover bg-left-center rounded-full"
-                          style={{
-                            backgroundImage: `url(${emotion.progressImage})`,
-                            width: percentage === 0 ? '0%' : '100%',
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'left center',
-                          }}
-                        />
-                      </div>
-
-                      {/* Slider dot */}
-                      <div
-                        className="slider-dot absolute top-1/2 w-[60px] h-[60px] rounded-full border-2 border-white shadow-xl z-20"
-                        style={{
-                          backgroundColor: emotion.sliderColor,
-                          left: leftOffset,
-                          boxShadow: `0 0 15px 4px ${emotion.sliderColor}`,
-                          transform: 'translateY(-50%)',
-                        }}
-                        onMouseDown={(e) => {
-                          e.stopPropagation();
-                          const handleMouseMove = (moveEvent) => {
-                            const rect = e.target.parentElement.getBoundingClientRect();
-                            const percentage = Math.min(
-                              100,
-                              Math.max(0, ((moveEvent.clientX - rect.left) / rect.width) * 100)
-                            );
-                            handleSliderChange(emotion.key, percentage);
-                          };
-
-                          const handleMouseUp = () => {
-                            document.removeEventListener('mousemove', handleMouseMove);
-                            document.removeEventListener('mouseup', handleMouseUp);
-                          };
-
-                          document.addEventListener('mousemove', handleMouseMove);
-                          document.addEventListener('mouseup', handleMouseUp);
-                        }}
-                      />
-                    </div>
-
-                    <button
-                      className="bg-white text-dark text-6xl font-medium font-['Poppins'] px-[36px] py-[24px] rounded-[66px] border"
-                      style={{ borderColor: emotion.color }}
-                    >
-                      {emotions[emotion.key]}%
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {emotionData.map((emotion) => (
+            <EmotionSlider
+              key={emotion.key}
+              label={emotion.label}
+              color={emotion.color}
+              gradientFrom={emotion.gradientFrom}
+              gradientTo={emotion.gradientTo}
+              // progressImage={emotion.progressImage}
+              sliderColor={emotion.sliderColor}
+              percentage={emotions[emotion.key]}
+              threadImage={emotion.threadImage}
+              yarnImage={emotion.yarnImage}
+              onChange={(val) => handleSliderChange(emotion.key, val)}
+            />
+          ))}
         </div>
 
         <div className="text-center">
@@ -284,15 +163,12 @@ const EmotionSelection = () => {
             Press Weave to watch your future unfold
           </p>
 
-          <CrawlingGradientButton onClick={handleWeaveClick}>
+          <CrawlingGradientButton onClick={handleWeaveClick} activateBorder={true}>
             <div className="text-white text-[120px] font-bold font-['Poppins'] leading-[135px] tracking-[2px] px-[126px] py-[26px]">
               WEAVE
             </div>
           </CrawlingGradientButton>
         </div>
-
-                                <Thread height='200px' width='500px'/>
-
       </div>
     </AppBackground>
   );
