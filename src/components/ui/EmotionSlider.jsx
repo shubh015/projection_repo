@@ -113,7 +113,7 @@ const EmotionSlider = ({
           >
             {/* Dim base bar */}
             <div
-              className="absolute top-1/2 transform -translate-y-1/2 h-[20px] w-full rounded-full"
+              className="absolute top-1/2 transform -translate-y-1/2 h-[20px] w-[99%] m-auto rounded-full"
               style={{
                 backgroundColor: color,
                 opacity: 0.3,
@@ -189,7 +189,7 @@ const EmotionSlider = ({
 
             {/* Dot */}
             {/* Slider dot */}
-            {showDot && (
+            {/* {showDot && (
               <div
                 className="slider-dot absolute top-1/2 w-[60px] h-[60px] rounded-full border-2 border-white shadow-xl z-20"
                 style={{
@@ -214,7 +214,49 @@ const EmotionSlider = ({
                   document.addEventListener('mouseup', handleMouseUp);
                 }}
               />
-            )}
+            )} */}
+            {showDot && (
+  <div
+    className="slider-dot absolute top-1/2 w-[60px] h-[60px] rounded-full border-2 border-white shadow-xl z-20"
+    style={{
+      backgroundColor: sliderColor,
+      left: leftOffset,
+      transform: 'translateY(-50%)',
+      boxShadow: `0 0 15px 4px ${sliderColor}`,
+      cursor: 'grab',
+    }}
+    onMouseDown={(e) => {
+      e.stopPropagation();
+      const handleMouseMove = (moveEvent) => {
+        const rect = e.target.parentElement.getBoundingClientRect();
+        const pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
+        onChange(Math.min(100, Math.max(0, pct)));
+      };
+      const handleMouseUp = () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }}
+    onTouchStart={(e) => {
+      const target = e.target;
+      const handleTouchMove = (moveEvent) => {
+        const touch = moveEvent.touches[0];
+        const rect = target.parentElement.getBoundingClientRect();
+        const pct = ((touch.clientX - rect.left) / rect.width) * 100;
+        onChange(Math.min(100, Math.max(0, pct)));
+      };
+      const handleTouchEnd = () => {
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
+    }}
+  />
+)}
+
           </div>
 
           {/* Percentage button */}
