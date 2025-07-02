@@ -67,7 +67,8 @@ const EmotionSlider = ({
           {/* Slider container */}
           <div
             className="relative flex-1 mx-[65px] p-12 cursor-pointer"
-            style={{ overflow: 'visible' }}
+            style={{ overflow: 'visible', touchAction: 'none' }}
+            onTouchMove={(e) => e.preventDefault()}
             // onClick={(e) => {
             //   const rect = e.currentTarget.getBoundingClientRect();
             //   const clickX = e.clientX - rect.left;
