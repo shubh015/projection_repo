@@ -9,7 +9,7 @@ const ExitPage = () => {
   const userName = location.state?.userName || sessionStorage.getItem('userName') || 'Guest';
 
   const [showTimer, setShowTimer] = useState(false);
-  const [countdown, setCountdown] = useState(15); // 12 - 4 delay = 8 seconds of countdown
+  const [countdown, setCountdown] = useState(56); // 12 - 4 delay = 8 seconds of countdown
 
   useEffect(() => {
     const showTimerTimeout = setTimeout(() => {
