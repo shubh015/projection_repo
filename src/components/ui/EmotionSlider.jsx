@@ -136,17 +136,48 @@ const EmotionSlider = ({
 
             {/* Yarn Ball — always fixed at left */}
             {/* Yarn Ball — always fixed at left */}
-            <img
-              src={yarnImage}
-              alt="yarn"
-              className="absolute top-1/2 left-[-15px] pointer-events-none"
-              style={{
-                width: '100px', // Increased size
-                height: '100px',
-                transform: 'translateY(-50%)',
-                zIndex: percentage === 0 ? 30 : 10, // 👈 Bring knot above dot when 0%
-              }}
-            />
+           <img
+  src={yarnImage}
+  alt="yarn"
+  className="absolute top-1/2 left-[-15px]"
+  style={{
+    width: '100px',
+    height: '100px',
+    transform: 'translateY(-50%)',
+    zIndex: 30,
+    cursor: 'grab',
+  }}
+  onMouseDown={(e) => {
+    e.stopPropagation();
+    const handleMouseMove = (moveEvent) => {
+      const rect = e.target.parentElement.getBoundingClientRect();
+      const pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
+      handleChange(pct); // This shows the dot too
+    };
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }}
+  onTouchStart={(e) => {
+    const target = e.target;
+    const handleTouchMove = (moveEvent) => {
+      const touch = moveEvent.touches[0];
+      const rect = target.parentElement.getBoundingClientRect();
+      const pct = ((touch.clientX - rect.left) / rect.width) * 100;
+      handleChange(pct); // This shows the dot too
+    };
+    const handleTouchEnd = () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+  }}
+/>
+
 
             {/* Thread Image — stretch based on percentage */}
             <div
