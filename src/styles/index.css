@@ -1,40 +1,153 @@
 @import './tailwind.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Whisper&display=swap');
 
-body {
-  font-family: 'Inter', sans-serif;
+/* Enhanced Kiosk Mode Styles */
+html, body {
+  /* Prevent zoom and scroll */
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  
+  /* Prevent text selection and context menu */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Prevent scrolling */
+  overflow: hidden;
+  
+  /* Remove default margins and padding */
   margin: 0;
   padding: 0;
+  
+  /* Prevent iOS bounce effect */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  /* Font setup */
+  font-family: 'Inter', sans-serif;
   box-sizing: border-box;
+}
+
+body {
   font-family: 'Whisper', cursive;
   font-weight: 400;
   font-style: normal;
 }
 
-html, body {
-  overscroll-behavior-x: none;
-  touch-action: manipulation;
-  -ms-touch-action: manipulation;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
-  overflow: hidden;
-  overscroll-behavior: none;
-  margin: 0;
-  padding: 0;
-}
-
-
-
+/* Apply box-sizing to all elements */
 *,
 *::before,
 *::after {
-  box-sizing: inherit;
+  box-sizing: border-box;
+  
+  /* Enhanced touch and gesture prevention */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* Prevent drag and drop */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
 }
 
+/* Root container for React app */
+#root {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Prevent zoom on images */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Make images selectable for necessary interactions */
+img.interactive {
+  pointer-events: auto;
+}
+
+/* Enhanced input field handling */
+input[type="text"], 
+input[type="email"], 
+input[type="tel"], 
+input[type="number"],
+input[type="password"],
+textarea {
+  /* Allow text selection in input fields */
+  -webkit-user-select: text !important;
+  -khtml-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  
+  /* Allow touch callout for inputs */
+  -webkit-touch-callout: default !important;
+  touch-action: manipulation;
+  
+  /* Prevent zoom on focus (iOS Safari) */
+  font-size: 16px !important;
+  
+  /* Remove default styling that might interfere */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Prevent zoom on select elements */
+select {
+  font-size: 16px !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Button optimization for kiosk */
+button {
+  /* Prevent double-tap zoom */
+  touch-action: manipulation;
+  
+  /* Smooth touch feedback */
+  transition: transform 0.1s ease-in-out;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* Prevent text selection in buttons */
+button * {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Kiosk-specific animations */
 @keyframes rotateGradient {
   0% {
     background-position: 0% 50%;
@@ -55,25 +168,6 @@ html, body {
   display: inline-block;
 }
 
-/* Touch optimization for the entire app */
-* {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-}
-
-/* Specific touch optimizations for inputs */
-input[type="text"], 
-input[type="email"], 
-input[type="tel"], 
-textarea {
-  -webkit-user-select: text !important;
-  -moz-user-select: text !important;
-  -ms-user-select: text !important;
-  user-select: text !important;
-  -webkit-touch-callout: default !important;
-  touch-action: manipulation;
-}
-
 /* Smooth transitions for touch interactions */
 .touch-smooth {
   transition: transform 0.15s ease-in-out;
@@ -83,18 +177,9 @@ textarea {
   transform: scale(0.98);
 }
 
-/* Ensure virtual keyboard doesn't break layout */
+/* Keyboard-safe class for virtual keyboard */
 .keyboard-safe {
   transition: all 0.3s ease-in-out;
-}
-
-/* Fix for iOS Safari virtual keyboard issues */
-@supports (-webkit-touch-callout: none) {
-  input[type="text"] {
-    font-size: 16px !important; /* Prevents zoom on iOS */
-    transform: scale(4.375); /* Scale back up for your 7xl equivalent */
-    transform-origin: center;
-  }
 }
 
 /* Large touch target optimization */
@@ -112,4 +197,82 @@ textarea {
   right: -10px;
   bottom: -10px;
   z-index: -1;
+}
+
+/* Prevent iOS Safari zoom on input focus */
+@supports (-webkit-touch-callout: none) {
+  input[type="text"] {
+    font-size: 16px !important;
+  }
+}
+
+/* Additional iOS-specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* Prevent scrolling on the entire document */
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Disable highlighting on touch */
+::selection {
+  background: transparent;
+}
+
+::-moz-selection {
+  background: transparent;
+}
+
+/* Hide scrollbars completely */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Prevent pull-to-refresh on Chrome mobile */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* Disable outline on focus for kiosk mode */
+*:focus {
+  outline: none !important;
+}
+
+/* Custom focus styles if needed */
+.focus-visible {
+  outline: 2px solid #4F46E5;
+  outline-offset: 2px;
+}
+
+/* Prevent text cursor from appearing */
+* {
+  cursor: default !important;
+}
+
+/* Override cursor for interactive elements */
+button, 
+input, 
+textarea, 
+select, 
+.interactive {
+  cursor: pointer !important;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="password"],
+textarea {
+  cursor: text !important;
 }

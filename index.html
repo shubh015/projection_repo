@@ -6,26 +6,170 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    
+    <!-- Enhanced viewport configuration for kiosk mode -->
     <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
-/>
-
-    <meta name="description" content="A React application built with Vite and Tailwind CSS" />
-    <meta name="theme-color" content="#646cff" />
-    <meta name="robots" content="index, follow" />
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, shrink-to-fit=no, viewport-fit=cover"
+    />
+    
+    <!-- Prevent zoom and scaling -->
+    <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
+    
+    <!-- iOS Safari specific meta tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Personality Insight" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Prevent iOS Safari from showing the address bar -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    
+    <!-- Android Chrome specific -->
+    <meta name="theme-color" content="#646cff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Prevent Windows Phone from highlighting phone numbers -->
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <!-- Edge/IE specific -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    
+    <!-- Prevent caching for dynamic content -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    <!-- Security headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:; img-src 'self' data: https:; font-src 'self' data: https:;" />
+    
+    <!-- SEO and App Info -->
+    <meta name="description" content="A React application built with Vite and Tailwind CSS" />
+    <meta name="robots" content="index, follow" />
+    
     <title>Personality Insight</title>
+    
+    <!-- Additional styles for kiosk mode -->
+    <style>
+      /* Prevent iOS bounce and zoom */
+      html, body {
+        touch-action: manipulation;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior: none;
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Prevent context menu and selection */
+      * {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+      /* Loading spinner */
+      #loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+      }
+      
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #646cff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+    
     <script
       type="module"
       src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fshubhams1482back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.5"
     ></script>
+    
+    <!-- Additional kiosk mode JavaScript -->
+    <script>
+      // Immediate prevention of zoom and gestures
+      document.addEventListener('DOMContentLoaded', function() {
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+          const now = (new Date()).getTime();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        }, false);
+        
+        // Prevent pinch zoom
+        document.addEventListener('touchmove', function(event) {
+          if (event.scale !== 1) {
+            event.preventDefault();
+          }
+        }, { passive: false });
+        
+        // Prevent context menu
+        document.addEventListener('contextmenu', function(e) {
+          e.preventDefault();
+        });
+        
+        // Prevent selection
+        document.addEventListener('selectstart', function(e) {
+          e.preventDefault();
+        });
+        
+        // Prevent drag
+        document.addEventListener('dragstart', function(e) {
+          e.preventDefault();
+        });
+      });
+      
+      // Prevent back button navigation
+      window.addEventListener('popstate', function(event) {
+        window.history.forward();
+      });
+      
+      // Push initial state to prevent back navigation
+      window.history.pushState(null, null, window.location.pathname);
+    </script>
   </head>
 
   <body>
+    <!-- Loading indicator -->
+    <div id="loading">
+      <div class="spinner"></div>
+    </div>
+    
     <div id="root"></div>
+    
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Remove loading indicator once React loads -->
+    <script>
+      window.addEventListener('load', function() {
+        const loading = document.getElementById('loading');
+        if (loading) {
+          loading.style.display = 'none';
+        }
+      });
+    </script>
   </body>
 </html>
