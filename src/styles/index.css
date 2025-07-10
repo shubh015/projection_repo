@@ -3,130 +3,121 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Whisper&display=swap');
 
-/* Enhanced Kiosk Mode Styles */
-html, body {
-  /* Prevent zoom and scroll */
-  overscroll-behavior-x: none;
-  overscroll-behavior-y: none;
-  overscroll-behavior: none;
-  touch-action: manipulation;
-  -ms-touch-action: manipulation;
-  
-  /* Prevent text selection and context menu */
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  
-  /* Prevent scrolling */
-  overflow: hidden;
-  
-  /* Remove default margins and padding */
+body {
+  font-family: 'Inter', sans-serif;
   margin: 0;
   padding: 0;
-  
-  /* Prevent iOS bounce effect */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  
-  /* Font setup */
-  font-family: 'Inter', sans-serif;
   box-sizing: border-box;
-}
-
-body {
   font-family: 'Whisper', cursive;
   font-weight: 400;
   font-style: normal;
 }
 
-/* Apply box-sizing to all elements */
+html, body {
+  /* Only prevent overscroll and unwanted scrolling behaviors */
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+  overscroll-behavior: none;
+  
+  /* Prevent iOS bounce effect */
+  -webkit-overflow-scrolling: touch;
+  
+  /* Remove default margins */
+  margin: 0;
+  padding: 0;
+  
+  /* Prevent pull-to-refresh */
+  overflow-x: hidden;
+}
+
+/* Global box-sizing */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Only prevent zoom-related touch actions, allow normal interactions */
+html {
+  /* Prevent double-tap zoom but allow normal touch */
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
   
-  /* Enhanced touch and gesture prevention */
+  /* Prevent text size adjust on zoom */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* Prevent unwanted selections and highlights globally */
+* {
+  /* Remove tap highlight */
   -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
   
-  /* Prevent drag and drop */
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
+  /* Prevent callout on long press (but allow normal touch) */
+  -webkit-touch-callout: none;
 }
 
-/* Root container for React app */
-#root {
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Prevent zoom on images */
-img {
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-  pointer-events: none;
-}
-
-/* Make images selectable for necessary interactions */
-img.interactive {
-  pointer-events: auto;
-}
-
-/* Enhanced input field handling */
+/* Allow text selection in specific elements */
 input[type="text"], 
 input[type="email"], 
 input[type="tel"], 
 input[type="number"],
 input[type="password"],
-textarea {
-  /* Allow text selection in input fields */
+textarea,
+.selectable-text {
   -webkit-user-select: text !important;
-  -khtml-user-select: text !important;
   -moz-user-select: text !important;
   -ms-user-select: text !important;
   user-select: text !important;
-  
-  /* Allow touch callout for inputs */
   -webkit-touch-callout: default !important;
-  touch-action: manipulation;
-  
-  /* Prevent zoom on focus (iOS Safari) */
-  font-size: 16px !important;
-  
-  /* Remove default styling that might interfere */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
 }
 
-/* Prevent zoom on select elements */
+/* Prevent text selection in UI elements */
+button,
+.slider-container,
+.no-select {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Slider-specific touch optimization */
+.slider-container {
+  /* Allow horizontal panning for sliders */
+  touch-action: pan-x;
+}
+
+.slider-dot,
+.slider-handle {
+  /* Allow manipulation for draggable elements */
+  touch-action: none;
+  cursor: grab;
+}
+
+.slider-dot:active,
+.slider-handle:active {
+  cursor: grabbing;
+}
+
+/* Input field optimization - prevent zoom on focus */
+input[type="text"], 
+input[type="email"], 
+input[type="tel"], 
+input[type="number"],
+input[type="password"],
+textarea,
 select {
-  font-size: 16px !important;
+  /* Prevent zoom on iOS by ensuring font-size is at least 16px */
+  /* font-size: max(16px, 1em) !important; */
+  
+  /* Remove default styling */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-/* Button optimization for kiosk */
+/* Button optimization */
 button {
   /* Prevent double-tap zoom */
   touch-action: manipulation;
@@ -139,15 +130,23 @@ button:active {
   transform: scale(0.95);
 }
 
-/* Prevent text selection in buttons */
-button * {
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-  user-select: none !important;
+/* Prevent image dragging */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
 }
 
-/* Kiosk-specific animations */
+/* Allow interaction with interactive images */
+img.interactive,
+img[draggable="true"] {
+  pointer-events: auto;
+}
+
+/* Animation keyframes */
 @keyframes rotateGradient {
   0% {
     background-position: 0% 50%;
@@ -168,7 +167,7 @@ button * {
   display: inline-block;
 }
 
-/* Smooth transitions for touch interactions */
+/* Touch-friendly interactive elements */
 .touch-smooth {
   transition: transform 0.15s ease-in-out;
 }
@@ -177,12 +176,12 @@ button * {
   transform: scale(0.98);
 }
 
-/* Keyboard-safe class for virtual keyboard */
+/* Keyboard-safe transitions */
 .keyboard-safe {
   transition: all 0.3s ease-in-out;
 }
 
-/* Large touch target optimization */
+/* Large touch targets */
 .touch-target {
   min-height: 44px;
   min-width: 44px;
@@ -199,27 +198,12 @@ button * {
   z-index: -1;
 }
 
-/* Prevent iOS Safari zoom on input focus */
-@supports (-webkit-touch-callout: none) {
-  input[type="text"] {
-    font-size: 16px !important;
-  }
+/* Prevent context menu only on long press */
+.no-context-menu {
+  -webkit-touch-callout: none;
 }
 
-/* Additional iOS-specific fixes */
-@media screen and (-webkit-min-device-pixel-ratio: 1) {
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-}
-
-/* Prevent scrolling on the entire document */
-html {
-  overflow: hidden;
-  height: 100%;
-}
-
-/* Disable highlighting on touch */
+/* Hide selection highlighting */
 ::selection {
   background: transparent;
 }
@@ -228,51 +212,75 @@ html {
   background: transparent;
 }
 
-/* Hide scrollbars completely */
-body::-webkit-scrollbar {
-  display: none;
+/* Scrollbar hiding for clean UI */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Emotion slider specific optimizations */
+.emotion-slider-container {
+  touch-action: pan-x;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-/* Prevent pull-to-refresh on Chrome mobile */
-body {
-  overscroll-behavior-y: contain;
+.emotion-slider-track {
+  touch-action: pan-x;
 }
 
-/* Disable outline on focus for kiosk mode */
-*:focus {
-  outline: none !important;
+.emotion-slider-dot {
+  touch-action: none;
+  cursor: grab;
+  transition: all 0.1s ease-out;
 }
 
-/* Custom focus styles if needed */
-.focus-visible {
-  outline: 2px solid #4F46E5;
-  outline-offset: 2px;
+.emotion-slider-dot:active {
+  cursor: grabbing;
+  transform: translateY(-50%) scale(1.1);
 }
 
-/* Prevent text cursor from appearing */
-* {
-  cursor: default !important;
+/* Yarn ball dragging optimization */
+.yarn-ball {
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-/* Override cursor for interactive elements */
-button, 
-input, 
-textarea, 
-select, 
-.interactive {
-  cursor: pointer !important;
+.yarn-ball:active {
+  cursor: grabbing;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="number"],
-input[type="password"],
-textarea {
-  cursor: text !important;
+/* Prevent zoom on specific containers */
+.prevent-zoom {
+  touch-action: manipulation;
+}
+
+/* Allow normal touch interactions on interactive elements */
+.allow-touch {
+  touch-action: auto;
+}
+
+/* Specific fixes for your components */
+.weave-button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.weave-button:hover {
+  transform: scale(1.05);
+}
+
+.weave-button:active {
+  transform: scale(0.98);
+}
+
+/* Ensure percentage buttons are touch-friendly */
+.percentage-button {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }

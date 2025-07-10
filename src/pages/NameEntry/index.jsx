@@ -82,7 +82,7 @@ const NameEntry = () => {
       <div className="flex flex-col items-center justify-center h-full px-4 my-20">
         <div className="flex flex-col items-center space-y-8 w-full gap-40 mb-48">
           {/* Title */}
-          <h1 className="text-white text-[110px] font-bold leading-[113px] text-center font-poppins">
+          <h1 className="text-white !text-[110px] font-bold leading-[113px] text-center font-poppins">
             Enter Your Name
           </h1>
 

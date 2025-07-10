@@ -10,11 +10,11 @@ const EmotionSlider = ({
   gradientTo,
   percentage,
   onChange,
-  //   progressImage,
   threadImage,
   yarnImage,
 }) => {
   const [showDot, setShowDot] = useState(percentage > 0);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (percentage <= 0) {
@@ -34,6 +34,7 @@ const EmotionSlider = ({
       onChange(clamped);
     }
   };
+
   const leftOffset =
     percentage === 0
       ? '0px'
@@ -41,9 +42,122 @@ const EmotionSlider = ({
         ? 'calc(100% - 32px)'
         : `calc(${percentage}% - 16px)`;
 
+  const handleSliderClick = (e) => {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const pct = (clickX / rect.width) * 100;
+    handleChange(pct);
+  };
+
+  const handleSliderTouch = (e) => {
+    e.stopPropagation();
+    setIsDragging(true);
+    
+    const handleTouchMove = (moveEvent) => {
+      if (moveEvent.touches.length === 1) { // Only handle single touch
+        const touch = moveEvent.touches[0];
+        const rect = e.currentTarget.getBoundingClientRect();
+        const pct = ((touch.clientX - rect.left) / rect.width) * 100;
+        handleChange(pct);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      setIsDragging(false);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+  };
+
+  const handleYarnDrag = (e, isTouch = false) => {
+    e.stopPropagation();
+    setIsDragging(true);
+
+    const handleMove = (moveEvent) => {
+      let clientX;
+      if (isTouch) {
+        if (moveEvent.touches.length === 1) {
+          clientX = moveEvent.touches[0].clientX;
+        } else {
+          return; // Ignore multi-touch
+        }
+      } else {
+        clientX = moveEvent.clientX;
+      }
+
+      const rect = e.target.parentElement.getBoundingClientRect();
+      const pct = ((clientX - rect.left) / rect.width) * 100;
+      handleChange(pct);
+    };
+
+    const handleEnd = () => {
+      setIsDragging(false);
+      if (isTouch) {
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('touchend', handleEnd);
+      } else {
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('mouseup', handleEnd);
+      }
+    };
+
+    if (isTouch) {
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('touchend', handleEnd, { passive: false });
+    } else {
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('mouseup', handleEnd);
+    }
+  };
+
+  const handleDotDrag = (e, isTouch = false) => {
+    e.stopPropagation();
+    setIsDragging(true);
+
+    const handleMove = (moveEvent) => {
+      let clientX;
+      if (isTouch) {
+        if (moveEvent.touches.length === 1) {
+          clientX = moveEvent.touches[0].clientX;
+        } else {
+          return; // Ignore multi-touch
+        }
+      } else {
+        clientX = moveEvent.clientX;
+      }
+
+      const rect = e.target.parentElement.getBoundingClientRect();
+      const pct = ((clientX - rect.left) / rect.width) * 100;
+      onChange(Math.min(100, Math.max(0, pct)));
+    };
+
+    const handleEnd = () => {
+      setIsDragging(false);
+      if (isTouch) {
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('touchend', handleEnd);
+      } else {
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('mouseup', handleEnd);
+      }
+    };
+
+    if (isTouch) {
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('touchend', handleEnd, { passive: false });
+    } else {
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('mouseup', handleEnd);
+    }
+  };
+
   return (
     <div
-      className="relative bg-overlay rounded-[26px] p-[15px]"
+      className="relative bg-overlay rounded-[26px] p-[15px] no-select"
       style={{ border: '1px solid rgba(255,255,255,0.1)' }}
     >
       <div
@@ -58,7 +172,7 @@ const EmotionSlider = ({
         >
           {/* Label */}
           <span
-            className="text-[80px] font-bold font-['Poppins'] leading-[45px] ml-[45px]"
+            className="text-[80px] font-bold font-['Poppins'] leading-[45px] ml-[45px] no-select"
             style={{ color }}
           >
             {label}
@@ -66,51 +180,13 @@ const EmotionSlider = ({
 
           {/* Slider container */}
           <div
-            className="relative flex-1 mx-[65px] p-12 cursor-pointer"
-            style={{ overflow: 'visible', touchAction: 'none' }}
-            onTouchMove={(e) => e.preventDefault()}
-            // onClick={(e) => {
-            //   const rect = e.currentTarget.getBoundingClientRect();
-            //   const clickX = e.clientX - rect.left;
-            //   const pct = (clickX / rect.width) * 100;
-            //   onChange(Math.min(100, Math.max(0, pct)));
-            // }}
-            // onTouchStart={(e) => {
-            //   e.preventDefault();
-            //   const handleTouchMove = (moveEvent) => {
-            //     const touch = moveEvent.touches[0];
-            //     const rect = e.currentTarget.getBoundingClientRect();
-            //     const pct = ((touch.clientX - rect.left) / rect.width) * 100;
-            //     onChange(Math.min(100, Math.max(0, pct)));
-            //   };
-            //   const handleTouchEnd = () => {
-            //     document.removeEventListener('touchmove', handleTouchMove);
-            //     document.removeEventListener('touchend', handleTouchEnd);
-            //   };
-            //   document.addEventListener('touchmove', handleTouchMove, { passive: false });
-            //   document.addEventListener('touchend', handleTouchEnd);
-            // }}
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const clickX = e.clientX - rect.left;
-              const pct = (clickX / rect.width) * 100;
-              handleChange(pct);
+            className="emotion-slider-container relative flex-1 mx-[65px] p-12 cursor-pointer"
+            style={{ 
+              overflow: 'visible',
+              touchAction: 'pan-x', // Allow horizontal panning only
             }}
-            onTouchStart={(e) => {
-              e.preventDefault();
-              const handleTouchMove = (moveEvent) => {
-                const touch = moveEvent.touches[0];
-                const rect = e.currentTarget.getBoundingClientRect();
-                const pct = ((touch.clientX - rect.left) / rect.width) * 100;
-                handleChange(pct);
-              };
-              const handleTouchEnd = () => {
-                document.removeEventListener('touchmove', handleTouchMove);
-                document.removeEventListener('touchend', handleTouchEnd);
-              };
-              document.addEventListener('touchmove', handleTouchMove, { passive: false });
-              document.addEventListener('touchend', handleTouchEnd);
-            }}
+            onClick={handleSliderClick}
+            onTouchStart={handleSliderTouch}
           >
             {/* Dim base bar */}
             <div
@@ -122,62 +198,23 @@ const EmotionSlider = ({
               }}
             />
 
-            {/* Yarn fixed at left */}
-            {/* <img
-              src={progressImage}
+            {/* Yarn Ball — always fixed at left */}
+            <img
+              src={yarnImage}
               alt="yarn"
-              className="absolute top-1/2 left-0 z-20 pointer-events-none"
+              className="yarn-ball absolute top-1/2 left-[-15px]"
               style={{
-                width: '60px',
-                height: '60px',
+                width: '100px',
+                height: '100px',
                 transform: 'translateY(-50%)',
+                zIndex: 30,
+                cursor: isDragging ? 'grabbing' : 'grab',
+                touchAction: 'none', // Prevent default touch behaviors
               }}
-            /> */}
-
-            {/* Yarn Ball — always fixed at left */}
-            {/* Yarn Ball — always fixed at left */}
-           <img
-  src={yarnImage}
-  alt="yarn"
-  className="absolute top-1/2 left-[-15px]"
-  style={{
-    width: '100px',
-    height: '100px',
-    transform: 'translateY(-50%)',
-    zIndex: 30,
-    cursor: 'grab',
-  }}
-  onMouseDown={(e) => {
-    e.stopPropagation();
-    const handleMouseMove = (moveEvent) => {
-      const rect = e.target.parentElement.getBoundingClientRect();
-      const pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
-      handleChange(pct); // This shows the dot too
-    };
-    const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  }}
-  onTouchStart={(e) => {
-    const target = e.target;
-    const handleTouchMove = (moveEvent) => {
-      const touch = moveEvent.touches[0];
-      const rect = target.parentElement.getBoundingClientRect();
-      const pct = ((touch.clientX - rect.left) / rect.width) * 100;
-      handleChange(pct); // This shows the dot too
-    };
-    const handleTouchEnd = () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd);
-  }}
-/>
-
+              onMouseDown={(e) => handleYarnDrag(e, false)}
+              onTouchStart={(e) => handleYarnDrag(e, true)}
+              draggable={false}
+            />
 
             {/* Thread Image — stretch based on percentage */}
             <div
@@ -188,7 +225,7 @@ const EmotionSlider = ({
               }}
             >
               <img
-                src={threadImage} // just the thread, not yarn
+                src={threadImage}
                 alt="thread"
                 style={{
                   width: '100%',
@@ -196,105 +233,35 @@ const EmotionSlider = ({
                   objectFit: 'cover',
                   objectPosition: 'left center',
                 }}
+                draggable={false}
               />
             </div>
 
-            {/* Stretching thread image */}
-            {/* <div
-              className="absolute top-1/2 left-[30px] transform -translate-y-1/2 h-[20px] z-10 pointer-events-none"
-              style={{
-                width: `calc(${percentage}% - 30px)`,
-                overflow: 'hidden',
-              }}
-            >
-              <img
-                src={progressImage}
-                alt="thread"
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'left center',
-                }}
-              />
-            </div> */}
-
-            {/* Dot */}
             {/* Slider dot */}
-            {/* {showDot && (
+            {showDot && (
               <div
-                className="slider-dot absolute top-1/2 w-[60px] h-[60px] rounded-full border-2 border-white shadow-xl z-20"
+                className="emotion-slider-dot absolute top-1/2 w-[60px] h-[60px] rounded-full border-2 border-white shadow-xl z-20"
                 style={{
                   backgroundColor: sliderColor,
                   left: leftOffset,
                   transform: 'translateY(-50%)',
                   boxShadow: `0 0 15px 4px ${sliderColor}`,
-                  cursor: 'grab',
+                  cursor: isDragging ? 'grabbing' : 'grab',
+                  touchAction: 'none', // Prevent default touch behaviors
                 }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  const handleMouseMove = (moveEvent) => {
-                    const rect = e.target.parentElement.getBoundingClientRect();
-                    const pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
-                    onChange(Math.min(100, Math.max(0, pct)));
-                  };
-                  const handleMouseUp = () => {
-                    document.removeEventListener('mousemove', handleMouseMove);
-                    document.removeEventListener('mouseup', handleMouseUp);
-                  };
-                  document.addEventListener('mousemove', handleMouseMove);
-                  document.addEventListener('mouseup', handleMouseUp);
-                }}
+                onMouseDown={(e) => handleDotDrag(e, false)}
+                onTouchStart={(e) => handleDotDrag(e, true)}
               />
-            )} */}
-            {showDot && (
-  <div
-    className="slider-dot absolute top-1/2 w-[60px] h-[60px] rounded-full border-2 border-white shadow-xl z-20"
-    style={{
-      backgroundColor: sliderColor,
-      left: leftOffset,
-      transform: 'translateY(-50%)',
-      boxShadow: `0 0 15px 4px ${sliderColor}`,
-      cursor: 'grab',
-    }}
-    onMouseDown={(e) => {
-      e.stopPropagation();
-      const handleMouseMove = (moveEvent) => {
-        const rect = e.target.parentElement.getBoundingClientRect();
-        const pct = ((moveEvent.clientX - rect.left) / rect.width) * 100;
-        onChange(Math.min(100, Math.max(0, pct)));
-      };
-      const handleMouseUp = () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    }}
-    onTouchStart={(e) => {
-      const target = e.target;
-      const handleTouchMove = (moveEvent) => {
-        const touch = moveEvent.touches[0];
-        const rect = target.parentElement.getBoundingClientRect();
-        const pct = ((touch.clientX - rect.left) / rect.width) * 100;
-        onChange(Math.min(100, Math.max(0, pct)));
-      };
-      const handleTouchEnd = () => {
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-      };
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd);
-    }}
-  />
-)}
-
+            )}
           </div>
 
           {/* Percentage button */}
           <button
-            className="bg-white text-dark text-6xl font-medium font-['Poppins'] px-[36px] py-[24px] rounded-[66px] border"
-            style={{ borderColor: color }}
+            className="percentage-button bg-white text-dark text-6xl font-medium font-['Poppins'] px-[36px] py-[24px] rounded-[66px] border no-select"
+            style={{ 
+              borderColor: color,
+              touchAction: 'manipulation', // Prevent zoom on button
+            }}
           >
             {Math.round(percentage)}%
           </button>
