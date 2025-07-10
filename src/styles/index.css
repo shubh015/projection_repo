@@ -16,12 +16,18 @@ body {
 
 html, body {
   overscroll-behavior-x: none;
-   touch-action: manipulation;
+  touch-action: manipulation;
   -ms-touch-action: manipulation;
+  -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
   overflow: hidden;
+  overscroll-behavior: none;
+  margin: 0;
+  padding: 0;
 }
+
+
 
 *,
 *::before,

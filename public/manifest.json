@@ -4,7 +4,7 @@
   "description": "A React application built with Vite and Tailwind CSS",
   "start_url": "/",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "orientation": "portrait",
   "theme_color": "#646cff",
   "background_color": "#ffffff",
   "icons": [
