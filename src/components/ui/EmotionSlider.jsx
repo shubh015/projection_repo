@@ -73,28 +73,17 @@ const EmotionSlider = ({
     document.addEventListener('touchend', handleTouchEnd, { passive: false });
   };
 
- const handleYarnDrag = (e, isTouch = false) => {
+const handleYarnDrag = (e, isTouch = false) => {
   e.stopPropagation();
   setIsDragging(true);
   
-  // IMMEDIATE RESPONSE: Show dot and set initial position right away
+  // IMMEDIATE RESPONSE: Show dot immediately when yarn ball is touched
+  // Start from current percentage or minimum threshold
+  const startPercentage = Math.max(percentage, SNAP_THRESHOLD);
+  setShowDot(true);
+  onChange(startPercentage);
+  
   const rect = e.target.parentElement.getBoundingClientRect();
-  let clientX;
-  
-  if (isTouch) {
-    clientX = e.touches[0].clientX;
-  } else {
-    clientX = e.clientX;
-  }
-  
-  const initialPct = ((clientX - rect.left) / rect.width) * 100;
-  const clampedInitialPct = Math.min(100, Math.max(0, initialPct));
-  
-  // Immediately show dot and set position
-  if (clampedInitialPct >= SNAP_THRESHOLD) {
-    setShowDot(true);
-    onChange(clampedInitialPct);
-  }
 
   const handleMove = (moveEvent) => {
     let clientX;
