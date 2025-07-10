@@ -16,6 +16,11 @@ body {
 
 html, body {
   overscroll-behavior-x: none;
+   touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;
 }
 
 *,
