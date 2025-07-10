@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const SNAP_THRESHOLD = 2;
+const SNAP_THRESHOLD = 0.5;
 
 const EmotionSlider = ({
   label,
