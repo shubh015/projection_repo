@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const SNAP_THRESHOLD = 0.5;
+const SNAP_THRESHOLD = 0;
 
 const EmotionSlider = ({
   label,
@@ -24,16 +24,19 @@ const EmotionSlider = ({
     }
   }, [percentage]);
 
-  const handleChange = (pct) => {
-    const clamped = Math.min(100, Math.max(0, pct));
-    if (clamped < SNAP_THRESHOLD) {
-      setShowDot(false);
-      onChange(0);
-    } else {
-      setShowDot(true);
-      onChange(clamped);
-    }
-  };
+const handleChange = (pct) => {
+  const clamped = Math.min(100, Math.max(0, pct));
+  
+  if (clamped === 0 && !isDragging) {
+    setShowDot(false);
+  } else {
+    setShowDot(true);
+  }
+
+  onChange(clamped);
+};
+
+
 
   const leftOffset =
     percentage === 0
