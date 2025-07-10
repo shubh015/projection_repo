@@ -50,38 +50,48 @@ const EmotionSlider = ({
     handleChange(pct);
   };
 
-  const handleSliderTouch = (e) => {
-    e.stopPropagation();
-    setIsDragging(true);
-    
-    const handleTouchMove = (moveEvent) => {
-      if (moveEvent.touches.length === 1) { // Only handle single touch
-        const touch = moveEvent.touches[0];
-        const rect = e.currentTarget.getBoundingClientRect();
-        const pct = ((touch.clientX - rect.left) / rect.width) * 100;
-        handleChange(pct);
-      }
-    };
+const handleSliderTouch = (e) => {
+  e.stopPropagation();
+  setIsDragging(true);
 
-    const handleTouchEnd = () => {
-      setIsDragging(false);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
+  // 👇 ADD THIS TO FORCE DOT SHOWING WHEN AT 0%
+  if (percentage <= 0) {
+    const startPercentage = SNAP_THRESHOLD;
+    setShowDot(true);
+    onChange(startPercentage);
+  }
 
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+  const handleTouchMove = (moveEvent) => {
+    if (moveEvent.touches.length === 1) {
+      const touch = moveEvent.touches[0];
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = ((touch.clientX - rect.left) / rect.width) * 100;
+      handleChange(pct);
+    }
   };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+  };
+
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchend', handleTouchEnd, { passive: false });
+};
+
 
 const handleYarnDrag = (e, isTouch = false) => {
   e.stopPropagation();
   setIsDragging(true);
   
   // IMMEDIATE RESPONSE: Show dot immediately when yarn ball is touched
-  // Start from current percentage or minimum threshold
-  const startPercentage = Math.max(percentage, SNAP_THRESHOLD);
   setShowDot(true);
-  onChange(startPercentage);
+  
+  // If starting from 0%, set to minimum threshold to make dot visible
+  if (percentage === 0) {
+    onChange(SNAP_THRESHOLD);
+  }
   
   const rect = e.target.parentElement.getBoundingClientRect();
 
