@@ -73,46 +73,64 @@ const EmotionSlider = ({
     document.addEventListener('touchend', handleTouchEnd, { passive: false });
   };
 
-  const handleYarnDrag = (e, isTouch = false) => {
-    e.stopPropagation();
-    setIsDragging(true);
+ const handleYarnDrag = (e, isTouch = false) => {
+  e.stopPropagation();
+  setIsDragging(true);
+  
+  // IMMEDIATE RESPONSE: Show dot and set initial position right away
+  const rect = e.target.parentElement.getBoundingClientRect();
+  let clientX;
+  
+  if (isTouch) {
+    clientX = e.touches[0].clientX;
+  } else {
+    clientX = e.clientX;
+  }
+  
+  const initialPct = ((clientX - rect.left) / rect.width) * 100;
+  const clampedInitialPct = Math.min(100, Math.max(0, initialPct));
+  
+  // Immediately show dot and set position
+  if (clampedInitialPct >= SNAP_THRESHOLD) {
+    setShowDot(true);
+    onChange(clampedInitialPct);
+  }
 
-    const handleMove = (moveEvent) => {
-      let clientX;
-      if (isTouch) {
-        if (moveEvent.touches.length === 1) {
-          clientX = moveEvent.touches[0].clientX;
-        } else {
-          return; // Ignore multi-touch
-        }
-      } else {
-        clientX = moveEvent.clientX;
-      }
-
-      const rect = e.target.parentElement.getBoundingClientRect();
-      const pct = ((clientX - rect.left) / rect.width) * 100;
-      handleChange(pct);
-    };
-
-    const handleEnd = () => {
-      setIsDragging(false);
-      if (isTouch) {
-        document.removeEventListener('touchmove', handleMove);
-        document.removeEventListener('touchend', handleEnd);
-      } else {
-        document.removeEventListener('mousemove', handleMove);
-        document.removeEventListener('mouseup', handleEnd);
-      }
-    };
-
+  const handleMove = (moveEvent) => {
+    let clientX;
     if (isTouch) {
-      document.addEventListener('touchmove', handleMove, { passive: false });
-      document.addEventListener('touchend', handleEnd, { passive: false });
+      if (moveEvent.touches.length === 1) {
+        clientX = moveEvent.touches[0].clientX;
+      } else {
+        return; // Ignore multi-touch
+      }
     } else {
-      document.addEventListener('mousemove', handleMove);
-      document.addEventListener('mouseup', handleEnd);
+      clientX = moveEvent.clientX;
+    }
+
+    const pct = ((clientX - rect.left) / rect.width) * 100;
+    handleChange(pct);
+  };
+
+  const handleEnd = () => {
+    setIsDragging(false);
+    if (isTouch) {
+      document.removeEventListener('touchmove', handleMove);
+      document.removeEventListener('touchend', handleEnd);
+    } else {
+      document.removeEventListener('mousemove', handleMove);
+      document.removeEventListener('mouseup', handleEnd);
     }
   };
+
+  if (isTouch) {
+    document.addEventListener('touchmove', handleMove, { passive: false });
+    document.addEventListener('touchend', handleEnd, { passive: false });
+  } else {
+    document.addEventListener('mousemove', handleMove);
+    document.addEventListener('mouseup', handleEnd);
+  }
+};
 
   const handleDotDrag = (e, isTouch = false) => {
     e.stopPropagation();
