@@ -24,19 +24,17 @@ const EmotionSlider = ({
     }
   }, [percentage]);
 
-const handleChange = (pct) => {
-  const clamped = Math.min(100, Math.max(0, pct));
-  
-  if (clamped === 0 && !isDragging) {
-    setShowDot(false);
-  } else {
-    setShowDot(true);
-  }
+  const handleChange = (pct) => {
+    const clamped = Math.min(100, Math.max(0, pct));
+    
+    if (clamped === 0 && !isDragging) {
+      setShowDot(false);
+    } else {
+      setShowDot(true);
+    }
 
-  onChange(clamped);
-};
-
-
+    onChange(clamped);
+  };
 
   const leftOffset =
     percentage === 0
@@ -45,118 +43,50 @@ const handleChange = (pct) => {
         ? 'calc(100% - 32px)'
         : `calc(${percentage}% - 16px)`;
 
-  const handleSliderClick = (e) => {
+  // Unified touch/drag handler for the entire slider container
+  const handleSliderInteraction = (e, isTouch = false) => {
+    e.preventDefault();
     e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const pct = (clickX / rect.width) * 100;
-    handleChange(pct);
-  };
-
-const handleSliderTouch = (e) => {
-  e.stopPropagation();
-  setIsDragging(true);
-
-  // 👇 ADD THIS TO FORCE DOT SHOWING WHEN AT 0%
-  if (percentage <= 0) {
-    const startPercentage = SNAP_THRESHOLD;
+    
+    // Immediately show dot and set dragging state
     setShowDot(true);
-    onChange(startPercentage);
-  }
-
-  const handleTouchMove = (moveEvent) => {
-    if (moveEvent.touches.length === 1) {
-      const touch = moveEvent.touches[0];
-      const rect = e.currentTarget.getBoundingClientRect();
-      const pct = ((touch.clientX - rect.left) / rect.width) * 100;
-      handleChange(pct);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setIsDragging(false);
-    document.removeEventListener('touchmove', handleTouchMove);
-    document.removeEventListener('touchend', handleTouchEnd);
-  };
-
-  document.addEventListener('touchmove', handleTouchMove, { passive: false });
-  document.addEventListener('touchend', handleTouchEnd, { passive: false });
-};
-
-
-const handleYarnDrag = (e, isTouch = false) => {
-  e.stopPropagation();
-  setIsDragging(true);
-  
-  // IMMEDIATE RESPONSE: Show dot immediately when yarn ball is touched
-  setShowDot(true);
-  
-  // If starting from 0%, set to minimum threshold to make dot visible
-  if (percentage === 0) {
-    onChange(SNAP_THRESHOLD);
-  }
-  
-  const rect = e.target.parentElement.getBoundingClientRect();
-
-  const handleMove = (moveEvent) => {
-    let clientX;
-    if (isTouch) {
-      if (moveEvent.touches.length === 1) {
-        clientX = moveEvent.touches[0].clientX;
-      } else {
-        return; // Ignore multi-touch
-      }
-    } else {
-      clientX = moveEvent.clientX;
-    }
-
-    const pct = ((clientX - rect.left) / rect.width) * 100;
-    handleChange(pct);
-  };
-
-  const handleEnd = () => {
-    setIsDragging(false);
-    if (isTouch) {
-      document.removeEventListener('touchmove', handleMove);
-      document.removeEventListener('touchend', handleEnd);
-    } else {
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('mouseup', handleEnd);
-    }
-  };
-
-  if (isTouch) {
-    document.addEventListener('touchmove', handleMove, { passive: false });
-    document.addEventListener('touchend', handleEnd, { passive: false });
-  } else {
-    document.addEventListener('mousemove', handleMove);
-    document.addEventListener('mouseup', handleEnd);
-  }
-};
-
-  const handleDotDrag = (e, isTouch = false) => {
-    e.stopPropagation();
     setIsDragging(true);
+    
+    // Get the slider container bounds
+    const sliderContainer = e.currentTarget.closest('.emotion-slider-container') || e.currentTarget;
+    const rect = sliderContainer.getBoundingClientRect();
+    
+    // Calculate initial position
+    const getClientX = (event) => {
+      if (isTouch) {
+        return event.touches && event.touches.length > 0 ? event.touches[0].clientX : event.changedTouches[0].clientX;
+      }
+      return event.clientX;
+    };
+    
+    const initialX = getClientX(e);
+    const initialPct = ((initialX - rect.left) / rect.width) * 100;
+    
+    // Set initial value if starting from 0
+    if (percentage === 0) {
+      handleChange(Math.max(SNAP_THRESHOLD, initialPct));
+    } else {
+      handleChange(initialPct);
+    }
 
     const handleMove = (moveEvent) => {
-      let clientX;
-      if (isTouch) {
-        if (moveEvent.touches.length === 1) {
-          clientX = moveEvent.touches[0].clientX;
-        } else {
-          return; // Ignore multi-touch
-        }
-      } else {
-        clientX = moveEvent.clientX;
-      }
-
-      const rect = e.target.parentElement.getBoundingClientRect();
+      moveEvent.preventDefault();
+      
+      const clientX = getClientX(moveEvent);
       const pct = ((clientX - rect.left) / rect.width) * 100;
-      onChange(Math.min(100, Math.max(0, pct)));
+      handleChange(pct);
     };
 
-    const handleEnd = () => {
+    const handleEnd = (endEvent) => {
+      endEvent.preventDefault();
       setIsDragging(false);
+      
+      // Clean up event listeners
       if (isTouch) {
         document.removeEventListener('touchmove', handleMove);
         document.removeEventListener('touchend', handleEnd);
@@ -166,6 +96,7 @@ const handleYarnDrag = (e, isTouch = false) => {
       }
     };
 
+    // Add event listeners
     if (isTouch) {
       document.addEventListener('touchmove', handleMove, { passive: false });
       document.addEventListener('touchend', handleEnd, { passive: false });
@@ -173,6 +104,24 @@ const handleYarnDrag = (e, isTouch = false) => {
       document.addEventListener('mousemove', handleMove);
       document.addEventListener('mouseup', handleEnd);
     }
+  };
+
+  // Specific handler for yarn ball to ensure immediate response
+  const handleYarnInteraction = (e, isTouch = false) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Immediately show dot and activate
+    setShowDot(true);
+    setIsDragging(true);
+    
+    // If at 0%, set to a small value to make dot visible
+    if (percentage === 0) {
+      handleChange(Math.max(SNAP_THRESHOLD, 5)); // Start at 5% for better visibility
+    }
+    
+    // Then handle as normal slider interaction
+    handleSliderInteraction(e, isTouch);
   };
 
   return (
@@ -198,15 +147,15 @@ const handleYarnDrag = (e, isTouch = false) => {
             {label}
           </span>
 
-          {/* Slider container */}
+          {/* Slider container - Now handles all interactions */}
           <div
             className="emotion-slider-container relative flex-1 mx-[65px] p-12 cursor-pointer"
             style={{ 
               overflow: 'visible',
-              touchAction: 'pan-x', // Allow horizontal panning only
+              touchAction: 'none', // Prevent all default touch behaviors
             }}
-            onClick={handleSliderClick}
-            onTouchStart={handleSliderTouch}
+            onMouseDown={(e) => handleSliderInteraction(e, false)}
+            onTouchStart={(e) => handleSliderInteraction(e, true)}
           >
             {/* Dim base bar */}
             <div
@@ -218,7 +167,7 @@ const handleYarnDrag = (e, isTouch = false) => {
               }}
             />
 
-            {/* Yarn Ball — always fixed at left */}
+            {/* Yarn Ball — always fixed at left with special handling */}
             <img
               src={yarnImage}
               alt="yarn"
@@ -229,10 +178,10 @@ const handleYarnDrag = (e, isTouch = false) => {
                 transform: 'translateY(-50%)',
                 zIndex: 30,
                 cursor: isDragging ? 'grabbing' : 'grab',
-                touchAction: 'none', // Prevent default touch behaviors
+                touchAction: 'none',
               }}
-              onMouseDown={(e) => handleYarnDrag(e, false)}
-              onTouchStart={(e) => handleYarnDrag(e, true)}
+              onMouseDown={(e) => handleYarnInteraction(e, false)}
+              onTouchStart={(e) => handleYarnInteraction(e, true)}
               draggable={false}
             />
 
@@ -267,10 +216,9 @@ const handleYarnDrag = (e, isTouch = false) => {
                   transform: 'translateY(-50%)',
                   boxShadow: `0 0 15px 4px ${sliderColor}`,
                   cursor: isDragging ? 'grabbing' : 'grab',
-                  touchAction: 'none', // Prevent default touch behaviors
+                  touchAction: 'none',
+                  pointerEvents: 'none', // Let parent handle all interactions
                 }}
-                onMouseDown={(e) => handleDotDrag(e, false)}
-                onTouchStart={(e) => handleDotDrag(e, true)}
               />
             )}
           </div>
@@ -280,7 +228,7 @@ const handleYarnDrag = (e, isTouch = false) => {
             className="percentage-button bg-white text-dark text-6xl font-medium font-['Poppins'] px-[36px] py-[24px] rounded-[66px] border no-select"
             style={{ 
               borderColor: color,
-              touchAction: 'manipulation', // Prevent zoom on button
+              touchAction: 'manipulation',
             }}
           >
             {Math.round(percentage)}%
