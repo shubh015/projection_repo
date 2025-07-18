@@ -46,6 +46,28 @@ export const emotionData = [
     yarnImage: '/images/red_knot.png',
     sliderColor: '#fb0a0a',
   },
+   {
+    key: 'blue',
+    label: 'Ego',
+    color: '#3849be',
+    gradientFrom: '#8f99df',
+    gradientTo: '#3849be',
+    threadImage: '/images/blue_thread.png',
+    yarnImage: '/images/blue_knot.png',
+    sliderColor: '#0e2ca8',
+  },
+ 
+ 
+   {
+    key: 'green',
+    label: 'Cheating',
+    color: '#048b43',
+    gradientFrom: '#8ed5af',
+    gradientTo: '#048b43',
+    threadImage: '/images/green_thread.png',
+    yarnImage: '/images/green_knot.png',
+    sliderColor: '#00ad56',
+  },
   {
     key: 'yellow',
     label: 'Greed',
@@ -55,26 +77,6 @@ export const emotionData = [
     threadImage: '/images/yellow_thread.png',
     yarnImage: '/images/yellow_knot.png',
     sliderColor: '#fcaa01',
-  },
-  {
-    key: 'green',
-    label: 'Maya',
-    color: '#048b43',
-    gradientFrom: '#8ed5af',
-    gradientTo: '#048b43',
-    threadImage: '/images/green_thread.png',
-    yarnImage: '/images/green_knot.png',
-    sliderColor: '#00ad56',
-  },
-  {
-    key: 'blue',
-    label: 'Maan',
-    color: '#3849be',
-    gradientFrom: '#8f99df',
-    gradientTo: '#3849be',
-    threadImage: '/images/blue_thread.png',
-    yarnImage: '/images/blue_knot.png',
-    sliderColor: '#0e2ca8',
   },
   
 ];

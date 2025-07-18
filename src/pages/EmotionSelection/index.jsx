@@ -136,7 +136,7 @@ const EmotionSelection = () => {
             Emotion Selection
           </h1>
           <p className="text-white text-[45px] font-medium font-['Poppins'] leading-[55px]">
-            Select the emotions in your nature and their percentage
+           "Choose your emotional intensity"
           </p>
         </div>
 

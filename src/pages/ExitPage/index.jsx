@@ -87,8 +87,9 @@ const ExitPage = () => {
               </h2>
 
               <p className="font-poppins max-w-[97rem] font-medium text-white text-[60px] leading-[90px] mb-6">
-                The brighter or more numerous the colorful threads in your carpet, the more intense
-                the anger, ego, deceit, and greed you'll have in your future births.
+                The brighter the colorful threads in your carpet.
+                <br />
+                The more intense anger, ego, deceit, and greed you'll have in your future births.
               </p>
 
               <p className="font-whisper font-normal text-white text-[125px] leading-[120px] text-center">
