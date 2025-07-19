@@ -77,7 +77,7 @@ const ExitPage = () => {
             className="rounded-[64px] flex flex-col items-center justify-center text-center px-[26rem] py-[10rem] backdrop-blur-sm relative"
             style={{ background: '#191919cc' }}
           >
-            <div className="flex flex-col justify-center items-center gap-24">
+            <div className="flex flex-col justify-center items-center gap-20">
               <h1 className="font-poppins font-bold text-white text-[150px] leading-[100%] mb-6">
                 Have A Glance At Your Future
               </h1>
@@ -88,9 +88,11 @@ const ExitPage = () => {
 
               <p className="font-poppins max-w-[97rem] font-medium text-white text-[60px] leading-[90px] mb-6">
                 The brighter the colorful threads in your carpet.
-                <br />
+                {/* <br /> */}
+                 </p>
+                 <p className="font-poppins max-w-[97rem] font-medium text-white text-[60px] leading-[90px] mb-6">
                 The more intense anger, ego, deceit, and greed you'll have in your future births.
-              </p>
+             </p>
 
               <p className="font-whisper font-normal text-white text-[125px] leading-[120px] text-center">
                 You are the master weaver of your future nature.

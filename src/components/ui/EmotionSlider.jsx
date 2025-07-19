@@ -26,7 +26,7 @@ const EmotionSlider = ({
 
   const handleChange = (pct) => {
     const clamped = Math.min(100, Math.max(0, pct));
-    
+
     if (clamped === 0 && !isDragging) {
       setShowDot(false);
     } else {
@@ -47,26 +47,28 @@ const EmotionSlider = ({
   const handleSliderInteraction = (e, isTouch = false) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Immediately show dot and set dragging state
     setShowDot(true);
     setIsDragging(true);
-    
+
     // Get the slider container bounds
     const sliderContainer = e.currentTarget.closest('.emotion-slider-container') || e.currentTarget;
     const rect = sliderContainer.getBoundingClientRect();
-    
+
     // Calculate initial position
     const getClientX = (event) => {
       if (isTouch) {
-        return event.touches && event.touches.length > 0 ? event.touches[0].clientX : event.changedTouches[0].clientX;
+        return event.touches && event.touches.length > 0
+          ? event.touches[0].clientX
+          : event.changedTouches[0].clientX;
       }
       return event.clientX;
     };
-    
+
     const initialX = getClientX(e);
     const initialPct = ((initialX - rect.left) / rect.width) * 100;
-    
+
     // Set initial value if starting from 0
     if (percentage === 0) {
       handleChange(Math.max(SNAP_THRESHOLD, initialPct));
@@ -76,7 +78,7 @@ const EmotionSlider = ({
 
     const handleMove = (moveEvent) => {
       moveEvent.preventDefault();
-      
+
       const clientX = getClientX(moveEvent);
       const pct = ((clientX - rect.left) / rect.width) * 100;
       handleChange(pct);
@@ -85,7 +87,7 @@ const EmotionSlider = ({
     const handleEnd = (endEvent) => {
       endEvent.preventDefault();
       setIsDragging(false);
-      
+
       // Clean up event listeners
       if (isTouch) {
         document.removeEventListener('touchmove', handleMove);
@@ -110,16 +112,16 @@ const EmotionSlider = ({
   const handleYarnInteraction = (e, isTouch = false) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Immediately show dot and activate
     setShowDot(true);
     setIsDragging(true);
-    
+
     // If at 0%, set to a small value to make dot visible
     if (percentage === 0) {
       handleChange(Math.max(SNAP_THRESHOLD, 5)); // Start at 5% for better visibility
     }
-    
+
     // Then handle as normal slider interaction
     handleSliderInteraction(e, isTouch);
   };
@@ -142,15 +144,22 @@ const EmotionSlider = ({
           {/* Label */}
           <span
             className="text-[80px] font-bold font-['Poppins'] leading-[45px] ml-[45px] no-select"
-            style={{ color }}
+            style={{
+              color,
+              width: '15%',
+              minWidth: '200px',
+              maxWidth: '300px',
+              display: 'inline-block',
+              textAlign: 'left',
+            }}
           >
             {label}
           </span>
 
           {/* Slider container - Now handles all interactions */}
           <div
-            className="emotion-slider-container relative flex-1 mx-[65px] p-12 cursor-pointer"
-            style={{ 
+            className="emotion-slider-container relative flex-1 ml-[160px] mr-[65px] p-12 cursor-pointer"
+            style={{
               overflow: 'visible',
               touchAction: 'none', // Prevent all default touch behaviors
             }}
@@ -226,7 +235,7 @@ const EmotionSlider = ({
           {/* Percentage button */}
           <button
             className="percentage-button bg-white text-dark text-6xl font-medium font-['Poppins'] px-[36px] py-[24px] rounded-[66px] border no-select"
-            style={{ 
+            style={{
               borderColor: color,
               touchAction: 'manipulation',
             }}
